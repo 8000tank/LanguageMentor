@@ -11,6 +11,7 @@ class ScenarioAgent(AgentBase):
     """
     场景代理类，负责处理特定场景下的对话。
     """
+
     def __init__(self, scenario_name, session_id=None):
         prompt_file = f"prompts/{scenario_name}_prompt.txt"
         intro_file = f"content/intro/{scenario_name}.json"
@@ -37,9 +38,8 @@ class ScenarioAgent(AgentBase):
         history = get_session_history(session_id)
         LOG.debug(f"[history][{session_id}]:{history}")
 
-        if not history.messages:
-            initial_ai_message = random.choice(self.intro_messages)  # 随机选择初始AI消息
-            history.add_message(AIMessage(content=initial_ai_message))  # 添加初始AI消息到历史记录
-            return initial_ai_message
-        else:
+        if history.messages:
             return history.messages[-1].content  # 返回历史记录中的最后一条消息
+        initial_ai_message = random.choice(self.intro_messages)  # 随机选择初始AI消息
+        history.add_message(AIMessage(content=initial_ai_message))  # 添加初始AI消息到历史记录
+        return initial_ai_message
